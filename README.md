@@ -39,7 +39,7 @@ chmod +x HPL_CPU_Benchmark.sh
 
 7. Run HPL Benchmark
 
-mpirun -np 48 xhpl
+mpirun -np 48 xhpl HPL.dat
 
 --------------------------------------------------
 
