@@ -20,13 +20,13 @@ which xhpl
 
 4. Give Permission to Script
 
-chmod +x hpl_parameter_generator.sh
+chmod +x HPL_CPU_Benchmark.sh
 
 --------------------------------------------------
 
 5. Run Script
 
-./hpl_parameter_generator.sh
+./HPL_CPU_Benchmark.sh
 
 --------------------------------------------------
 
