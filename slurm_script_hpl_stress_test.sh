@@ -18,7 +18,7 @@ MON_PID=$!
 echo "Monitor PID: $MON_PID"
 
 # Run HPL stress test
-./Scripts/stress_test.sh $LOGDIR
+./Scripts/stress_test_hpl.sh $LOGDIR
 
 # Stop monitoring
 kill $MON_PID
