@@ -11,6 +11,14 @@ cd $SLURM_SUBMIT_DIR
 LOGDIR=LOGS/$SLURM_JOB_ID
 mkdir -p $LOGDIR
 
+# Load Spack
+source /home/apps/spack/share/spack/setup-env.sh
+
+# Load HPL
+spack load hpl
+
+echo "Job Started: $(date)" | tee $LOGDIR/job_info.log
+
 # Start monitoring
 ./Scripts/node_health_monitoring.sh $LOGDIR &
 MON_PID=$!
@@ -24,7 +32,7 @@ echo "Monitor PID: $MON_PID"
 kill $MON_PID
 
 # Save SLURM logs
-cp slurm-${SLURM_JOB_ID}.out $LOGDIR/
-cp slurm-${SLURM_JOB_ID}.err $LOGDIR/
+mv slurm-${SLURM_JOB_ID}.out $LOGDIR/
+mv slurm-${SLURM_JOB_ID}.err $LOGDIR/
 
 echo "Benchmark completed"
