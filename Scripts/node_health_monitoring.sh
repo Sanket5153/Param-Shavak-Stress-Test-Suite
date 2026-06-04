@@ -1,8 +1,8 @@
 #!/bin/bash
 
-mkdir -p MONITOR_LOG
+mkdir -p LOGS/MONITOR_LOG
 
-LOGFILE="MONITOR_LOG/node_health.csv"
+LOGFILE="LOGS/MONITOR_LOG/node_health.csv"
 
 echo "Timestamp,Temp_C,Avg_CPU_MHz" > "$LOGFILE"
 
