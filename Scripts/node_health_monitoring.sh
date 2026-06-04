@@ -16,5 +16,5 @@ do
 
     echo "$TIMESTAMP,$TEMP,$FREQ" >> "$LOGFILE"
 
-    sleep 60
+    sleep 30
 done
