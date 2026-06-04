@@ -8,13 +8,23 @@
 
 cd $SLURM_SUBMIT_DIR
 
-# Load spack env
-source /home/apps/spack/share/spack/setup-env.sh
+LOGDIR=LOGS/$SLURM_JOB_ID
+mkdir -p $LOGDIR
 
-# Load HPL Benchmark
-spack load hpl
+# Start monitoring
+./Scripts/node_health_monitoring.sh $LOGDIR &
+MON_PID=$!
 
-# RUN benchmark
-mpirun -np 48 xhpl HPL.dat
+echo "Monitor PID: $MON_PID"
+
+# Run HPL stress test
+./Scripts/stress_test.sh $LOGDIR
+
+# Stop monitoring
+kill $MON_PID
+
+# Save SLURM logs
+cp slurm-${SLURM_JOB_ID}.out $LOGDIR/
+cp slurm-${SLURM_JOB_ID}.err $LOGDIR/
 
 echo "Benchmark completed"
