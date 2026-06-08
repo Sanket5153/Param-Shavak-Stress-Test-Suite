@@ -26,5 +26,5 @@ do
     # Print to terminal
     echo "[$TIMESTAMP] Temp: ${TEMP}°C | Avg CPU Frequency: ${FREQ} MHz"
 
-    sleep 30
+    sleep 10
 done
