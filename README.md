@@ -1,30 +1,82 @@
-# HPL Stress Test and Node Health Monitoring
+# Param Shavak Stress Test Framework
 
 ## Overview
 
 This package provides:
 
-1. HPL-based system stress testing for long-duration validation (24/72 hours).
-2. CPU temperature and frequency monitoring during benchmark execution.
-3. Logging of benchmark and monitoring data for post-run analysis.
+1. HPL-based system stress testing for long-duration validation (24/72 hours)
+2. CPU temperature and frequency monitoring during benchmark execution
+3. Logging of benchmark and monitoring data for post-run analysis
 
 ---
 
 ## Prerequisites
 
-Install lm_sensors:
+### 1. Load the Spack Environment
+
+Before running any commands, load the Spack environment:
+
+```bash
+source /home/apps/spack/share/spack/setup-env.sh
+```
+
+Verify Spack is available:
+
+```bash
+spack --version
+```
+
+---
+
+### 2. Verify HPL Installation
+
+Check whether HPL is already installed:
+
+```bash
+spack find hpl
+```
+
+If HPL is not installed, install it using:
+
+```bash
+spack install hpl
+```
+
+Load HPL:
+
+```bash
+spack load hpl
+```
+
+Verify the executable:
+
+```bash
+which xhpl
+```
+
+Example output:
+
+```bash
+/path/to/xhpl
+```
+
+---
+
+### 3. Install lm_sensors
+
+Rocky Linux / RHEL:
 
 ```bash
 sudo dnf install lm_sensors
 ```
 
-or
+Ubuntu / Debian:
 
 ```bash
 sudo apt install lm-sensors
 ```
 
-Verify sensors are available:
+Verify sensor data:
 
 ```bash
 sensors
@@ -48,7 +100,7 @@ cd ..
 
 ## Configuring HPL Stress Test Duration
 
-Edit the following file:
+Edit:
 
 ```bash
 Scripts/stress_test_hpl.sh
@@ -98,7 +150,7 @@ Start monitoring manually:
 
 ```bash
 cd Scripts
-source node_health_monitoring.sh
+./node_health_monitoring.sh
 ```
 
 The script continuously records:
@@ -107,15 +159,19 @@ The script continuously records:
 * CPU Temperature
 * Average CPU Frequency
 
-Monitoring data is collected every 10 seconds by default.
+By default, data is collected every 10 seconds.
 
-To modify the sampling interval, edit:
+To change the interval, edit:
 
 ```bash
 sleep 10
 ```
 
-at the end of `node_health_monitoring.sh`.
+inside:
+
+```bash
+Scripts/node_health_monitoring.sh
+```
 
 ---
 
@@ -127,7 +183,7 @@ Monitoring data is stored in:
 LOGS/MONITOR_LOG/node_health.csv
 ```
 
-View the collected data:
+View:
 
 ```bash
 cat LOGS/MONITOR_LOG/node_health.csv
@@ -162,13 +218,13 @@ run_3.log
 ...
 ```
 
-`summary.log` contains the start time, finish time, and exit status of each benchmark run.
+The `summary.log` file contains benchmark start time, finish time, and exit status for each run.
 
 ---
 
 ## Cancelling a Running Job
 
-Find the job ID:
+Find the Job ID:
 
 ```bash
 squeue -u $USER
@@ -204,13 +260,12 @@ LOGS/
 
 ---
 
-## Purpose
-
-This framework is intended for:
+## Use Cases
 
 * 24-hour burn-in testing
 * 72-hour stability testing
 * Thermal throttling detection
 * CPU frequency drop analysis
 * HPC node health validation
-* Pre-deployment cluster qualification
+* Cluster acceptance testing
+* Pre-deployment system qualification
