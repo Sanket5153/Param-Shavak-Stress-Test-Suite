@@ -1,62 +1,216 @@
-HPL Benchmark Setup Guide
+# HPL Stress Test and Node Health Monitoring
 
-1. Load Spack
+## Overview
 
-source /home/apps/spack/share/spack/setup-env.sh
+This package provides:
 
---------------------------------------------------
+1. HPL-based system stress testing for long-duration validation (24/72 hours).
+2. CPU temperature and frequency monitoring during benchmark execution.
+3. Logging of benchmark and monitoring data for post-run analysis.
 
-2. Load HPL
+---
 
-spack load hpl
+## Prerequisites
 
---------------------------------------------------
+Install lm_sensors:
 
-3. Check HPL
+```bash
+sudo dnf install lm_sensors
+```
 
-which xhpl
+or
 
---------------------------------------------------
+```bash
+sudo apt install lm-sensors
+```
 
-4. Give Permission to Script
+Verify sensors are available:
 
-chmod +x HPL_CPU_Benchmark.sh
+```bash
+sensors
+```
 
---------------------------------------------------
+---
 
-5. Run Script
+## Setup
 
-./HPL_CPU_Benchmark.sh
+Make all scripts executable:
 
---------------------------------------------------
+```bash
+chmod +x *.sh
 
-6. Script Generates
+cd Scripts
+chmod +x *.sh
+cd ..
+```
 
-1. HPL.dat
-2. parameters.txt
+---
 
---------------------------------------------------
+## Configuring HPL Stress Test Duration
 
-7. Run HPL Benchmark
+Edit the following file:
 
-mpirun -np 48 xhpl HPL.dat
+```bash
+Scripts/stress_test_hpl.sh
+```
 
---------------------------------------------------
+Modify:
 
-8. Example Values
+```bash
+DURATION_HOURS=24
+```
 
-Efficiency : 90
-NB         : 192
-P          : 4
-Q          : 4
-MPI        : 16
+Examples:
 
---------------------------------------------------
+```bash
+DURATION_HOURS=24
+```
 
-9. Important Note
+Runs the benchmark for 24 hours.
 
-P × Q should be equal to MPI processes
+```bash
+DURATION_HOURS=72
+```
+
+Runs the benchmark for 72 hours.
+
+---
+
+## Running the Stress Test
+
+Submit the SLURM job:
+
+```bash
+sbatch slurm_script_hpl_stress_test.sh
+```
+
+Check job status:
+
+```bash
+squeue -u $USER
+```
+
+---
+
+## Running Node Health Monitoring
+
+Start monitoring manually:
+
+```bash
+cd Scripts
+source node_health_monitoring.sh
+```
+
+The script continuously records:
+
+* Timestamp
+* CPU Temperature
+* Average CPU Frequency
+
+Monitoring data is collected every 10 seconds by default.
+
+To modify the sampling interval, edit:
+
+```bash
+sleep 10
+```
+
+at the end of `node_health_monitoring.sh`.
+
+---
+
+## Monitoring Logs
+
+Monitoring data is stored in:
+
+```bash
+LOGS/MONITOR_LOG/node_health.csv
+```
+
+View the collected data:
+
+```bash
+cat LOGS/MONITOR_LOG/node_health.csv
+```
 
 Example:
 
-6 × 8 = 48
+```text
+Timestamp,Temp_C,Avg_CPU_MHz
+2026-06-08 11:00:00,65,2400
+2026-06-08 11:00:10,66,2400
+2026-06-08 11:00:20,68,2395
+```
+
+---
+
+## HPL Benchmark Logs
+
+Benchmark logs are stored in:
+
+```bash
+LOGS/HPL_LOG/
+```
+
+Files generated:
+
+```text
+summary.log
+run_1.log
+run_2.log
+run_3.log
+...
+```
+
+`summary.log` contains the start time, finish time, and exit status of each benchmark run.
+
+---
+
+## Cancelling a Running Job
+
+Find the job ID:
+
+```bash
+squeue -u $USER
+```
+
+Cancel the job:
+
+```bash
+scancel <JOB_ID>
+```
+
+Example:
+
+```bash
+scancel 123456
+```
+
+---
+
+## Output Directory Structure
+
+```text
+LOGS/
+├── HPL_LOG/
+│   ├── summary.log
+│   ├── run_1.log
+│   ├── run_2.log
+│   └── ...
+│
+└── MONITOR_LOG/
+    └── node_health.csv
+```
+
+---
+
+## Purpose
+
+This framework is intended for:
+
+* 24-hour burn-in testing
+* 72-hour stability testing
+* Thermal throttling detection
+* CPU frequency drop analysis
+* HPC node health validation
+* Pre-deployment cluster qualification
