@@ -39,7 +39,7 @@ spack find hpl
 If HPL is not installed, install it using:
 
 ```bash
-spack install hpl
+spack install -j40 hpl
 ```
 
 Load HPL:
